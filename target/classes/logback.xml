@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <contextName>wallpaper-json-writer</contextName>
+    <timestamp key="bySecond" datePattern="yyyy-MM-dd'T'HH:mm:ss"/>
+
+    <property name="LOG_HOME" value="/data/logs/wallpaper-json-writer"/>
+    <!--<property name="LOG_HOME" value="d:/test/log"/>-->
+
+
+    <!-- 输出到控制台 -->
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender" >
+        <!-- 输出的格式 -->
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{50}:  %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <!-- 配置滚动的策略 -->
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <!-- 日志名称的格式 -->
+            <fileNamePattern>${LOG_HOME}/wallpaper.log.%d{yyyy-MM-dd}</fileNamePattern>
+            <!-- 保存的最长时间：天数 -->
+            <MaxHistory>7</MaxHistory>
+        </rollingPolicy>
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{50}:  %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <!--
+    注意：
+    loger和logger都是可以用的，两者有区别。loger会将加载logback的信息打印输出，最后会执行root指定级别的日志。
+    logger不会输出加载logback的信息，只会输出程序中书写的日志记录。经常使用的是logger。
+
+    <loger name="ws.log.logback.LogbackTest" additivity="false">
+        <level value="INFO" />
+        <appender-ref  ref="STDOUT" />
+    </loger>
+    -->
+
+    <logger name="ws.log.logback.LogbackTest" additivity="false">
+        <level value="INFO" />
+        <appender-ref ref="STDOUT" />
+    </logger>
+
+    <!-- 相当于loger元素，只是name值已经确定为root了 -->
+    <root level="DEBUG">
+        <appender-ref ref="STDOUT" />
+        <appender-ref ref="FILE" />
+    </root>
+</configuration>

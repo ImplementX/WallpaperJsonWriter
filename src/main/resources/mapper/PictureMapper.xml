@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wallpaper.json.dao.PictureMapper">
+    <resultMap id="BaseResultMap" type="com.wallpaper.json.pojo.Picture">
+        <id column="pic_id" jdbcType="INTEGER" property="picId"/>
+        <result column="pic_name" jdbcType="VARCHAR" property="picName"/>
+        <result column="pic_path" jdbcType="VARCHAR" property="picPath"/>
+        <result column="pic_detail" jdbcType="VARCHAR" property="picDetail"/>
+        <result column="pic_status" jdbcType="VARCHAR" property="picStatus"/>
+        <result column="pic_tag" jdbcType="VARCHAR" property="picTag"/>
+        <result column="pic_thumbnail" jdbcType="VARCHAR" property="picThumbnail"/>
+    </resultMap>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from picture
+    where pic_id = #{picId,jdbcType=INTEGER}
+  </delete>
+    <insert id="insert" parameterType="com.wallpaper.json.pojo.Picture">
+    insert into picture (pic_id, pic_name, pic_path, 
+      pic_detail, pic_status, pic_tag, 
+      pic_thumbnail)
+    values (#{picId,jdbcType=INTEGER}, #{picName,jdbcType=VARCHAR}, #{picPath,jdbcType=VARCHAR}, 
+      #{picDetail,jdbcType=VARCHAR}, #{picStatus,jdbcType=VARCHAR}, #{picTag,jdbcType=VARCHAR}, 
+      #{picThumbnail,jdbcType=VARCHAR})
+  </insert>
+    <update id="updateByPrimaryKey" parameterType="com.wallpaper.json.pojo.Picture">
+    update picture
+    set pic_name = #{picName,jdbcType=VARCHAR},
+      pic_path = #{picPath,jdbcType=VARCHAR},
+      pic_detail = #{picDetail,jdbcType=VARCHAR},
+      pic_status = #{picStatus,jdbcType=VARCHAR},
+      pic_tag = #{picTag,jdbcType=VARCHAR},
+      pic_thumbnail = #{picThumbnail,jdbcType=VARCHAR}
+    where pic_id = #{picId,jdbcType=INTEGER}
+  </update>
+    <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select pic_id, pic_name, pic_path, pic_detail, pic_status, pic_tag, pic_thumbnail
+    from picture
+    where pic_id = #{picId,jdbcType=INTEGER}
+  </select>
+    <select id="selectAllAsc" resultMap="BaseResultMap">
+    select pic_id, pic_name, pic_path, pic_detail, pic_status, pic_tag, pic_thumbnail
+    from picture ORDER BY pic_id ASC
+  </select>
+    <select id="selectAllDesc" resultMap="BaseResultMap">
+    select pic_id, pic_name, pic_path, pic_detail, pic_status, pic_tag, pic_thumbnail
+    from picture ORDER BY pic_id DESC
+  </select>
+  <select id="selectByTag" resultMap="BaseResultMap" parameterType="com.wallpaper.json.pojo.Tag">
+    SELECT pic_id, pic_name, pic_path, pic_detail, pic_status, pic_tag, pic_thumbnail
+    from picture
+    WHERE pic_tag = #{tagId,jdbcType=INTEGER}
+  </select>
+</mapper>

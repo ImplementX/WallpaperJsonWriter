@@ -24,19 +24,39 @@ import java.util.List;
 
 public class MainClass {
     private static final Logger LOGGER = LoggerFactory.getLogger(MainClass.class);
-        private static final String PATH = "/data/wallpaper-spider/wallpaper_api";
-//    final static String PATH = "d:/test";
+//    private static final String PATH = "/data/wallpaper-spider/wallpaper_api";
+        final static String PATH = "d:/test";
+    private static PictureService pictureService = new PictureServiceImpl();
+    private static FileService fileService = new FileServiceImpl();
+    private static TagService tagService = new TagServiceImpl();
+    private static Gson gson = new Gson();
+    private static HashMap<String, Tag> tagMap = new HashMap<>();
 
     public static void main(String[] args) {
         LOGGER.info("**************************************************");
         LOGGER.info("txt文件写入开始");
-        PictureService pictureService = new PictureServiceImpl();
-        FileService fileService = new FileServiceImpl();
-        TagService tagService = new TagServiceImpl();
 
-        Gson gson = new Gson();
+
+        tagList();
+        latestList();
+        popularList();
+
+
+        DBUtils.closeSqlSession();
+        LOGGER.info("txt文件写入结束");
+        LOGGER.info("**************************************************\n");
+    }
+
+    public static void popularList() {
+        LOGGER.info("写入popularList");
+        List<Picture> list1 = pictureService.listPicturesByTagAsc(tagMap.get("fengjing"), 300, 0);
+        list1 = list1.subList(200, 300);
+        String popularList = gson.toJson(list1);
+        fileService.fileWrite(PATH, "popularList", popularList);
+    }
+
+    public static void tagList() {
         List<Tag> tagList = tagService.listTags();
-        HashMap<String, Tag> tagMap = new HashMap<>();
         LOGGER.info("写入分类");
         for (Tag tag : tagList) {
             String json = gson.toJson(pictureService.listPicturesByTagDesc(tag, 300, 0));
@@ -45,14 +65,9 @@ public class MainClass {
             fileService.fileWrite(PATH, tagPinYin, json);
             tagMap.put(tag.getTagPinyin(), tag);
         }
+    }
 
-        LOGGER.info("写入popularList");
-        List<Picture> list1 = pictureService.listPicturesByTagAsc(tagMap.get("fengjing"), 300, 0);
-        list1 = list1.subList(200,300);
-        String popularList = gson.toJson(list1);
-        fileService.fileWrite(PATH, "popularList", popularList);
-
-
+    public static void latestList() {
         SimpleDateFormat format = new SimpleDateFormat("yy-MM-dd");
         String today = format.format(new Date());
         if (!Files.exists(Paths.get(PATH + "/count"))) {
@@ -73,16 +88,10 @@ public class MainClass {
 
         }
 
-
-        LOGGER.info("写入latestList,偏移量："+count);
+        LOGGER.info("写入latestList,偏移量：" + count);
         List<Picture> list2 = pictureService.listPicturesByTagAsc(tagMap.get("fengjing"), 60, count);
         Collections.reverse(list2);
         String latestList = gson.toJson(list2);
         fileService.fileWrite(PATH, "latestList", latestList);
-
-
-        DBUtils.closeSqlSession();
-        LOGGER.info("txt文件写入结束");
-        LOGGER.info("**************************************************\n");
     }
 }

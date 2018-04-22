@@ -15,11 +15,11 @@
     where pic_id = #{picId,jdbcType=INTEGER}
   </delete>
     <insert id="insert" parameterType="com.wallpaper.json.pojo.Picture">
-    insert into picture (pic_id, pic_name, pic_path, 
-      pic_detail, pic_status, pic_tag, 
+    insert into picture (pic_id, pic_name, pic_path,
+      pic_detail, pic_status, pic_tag,
       pic_thumbnail)
-    values (#{picId,jdbcType=INTEGER}, #{picName,jdbcType=VARCHAR}, #{picPath,jdbcType=VARCHAR}, 
-      #{picDetail,jdbcType=VARCHAR}, #{picStatus,jdbcType=VARCHAR}, #{picTag,jdbcType=VARCHAR}, 
+    values (#{picId,jdbcType=INTEGER}, #{picName,jdbcType=VARCHAR}, #{picPath,jdbcType=VARCHAR},
+      #{picDetail,jdbcType=VARCHAR}, #{picStatus,jdbcType=VARCHAR}, #{picTag,jdbcType=VARCHAR},
       #{picThumbnail,jdbcType=VARCHAR})
   </insert>
     <update id="updateByPrimaryKey" parameterType="com.wallpaper.json.pojo.Picture">
@@ -37,17 +37,55 @@
     from picture
     where pic_id = #{picId,jdbcType=INTEGER}
   </select>
-    <select id="selectAllAsc" resultMap="BaseResultMap">
+
+    <select id="selectAll" resultMap="BaseResultMap" >
     select pic_id, pic_name, pic_path, pic_detail, pic_status, pic_tag, pic_thumbnail
-    from picture ORDER BY pic_id ASC
+    from picture
+    WHERE  pic_status="0"
+        ORDER BY
+        <choose>
+            <when test="sortElem!=null">
+                ${sortElem}
+                <if test="order!=null">
+                    ${order}
+                </if>
+            </when>
+            <otherwise>
+                pic_id asc
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="limit!=null">
+               limit ${limit}
+                <if test="offset!=null">
+                offset  ${offset}
+                </if>
+            </when>
+        </choose>
   </select>
-    <select id="selectAllDesc" resultMap="BaseResultMap">
-    select pic_id, pic_name, pic_path, pic_detail, pic_status, pic_tag, pic_thumbnail
-    from picture ORDER BY pic_id DESC
-  </select>
-  <select id="selectByTag" resultMap="BaseResultMap" parameterType="com.wallpaper.json.pojo.Tag">
+  <select id="selectByTag" resultMap="BaseResultMap" >
     SELECT pic_id, pic_name, pic_path, pic_detail, pic_status, pic_tag, pic_thumbnail
     from picture
-    WHERE pic_tag = #{tagId,jdbcType=INTEGER}
+    WHERE pic_tag = #{tag.tagId,jdbcType=INTEGER} AND pic_status="0"
+      ORDER BY
+      <choose>
+          <when test="sortElem!=null">
+              ${sortElem}
+              <if test="order!=null">
+                  ${order}
+              </if>
+          </when>
+          <otherwise>
+              pic_id asc
+          </otherwise>
+      </choose>
+      <choose>
+          <when test="limit!=null">
+              limit ${limit}
+              <if test="offset!=null">
+                  offset  ${offset}
+              </if>
+          </when>
+      </choose>
   </select>
 </mapper>

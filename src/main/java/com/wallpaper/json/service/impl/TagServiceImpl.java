@@ -5,8 +5,6 @@ import com.wallpaper.json.pojo.Tag;
 import com.wallpaper.json.service.TagService;
 import com.wallpaper.json.util.DBUtils;
 import org.apache.ibatis.session.SqlSession;
-
-import java.util.ArrayList;
 import java.util.List;
 
 public class TagServiceImpl implements TagService{

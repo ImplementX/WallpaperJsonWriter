@@ -1,10 +1,11 @@
 package com.wallpaper.json.service.impl;
 
 
+import com.sun.org.apache.regexp.internal.RE;
 import com.wallpaper.json.service.FileService;
 
-import java.io.FileOutputStream;
-import java.io.IOException;
+import javax.xml.crypto.dsig.keyinfo.RetrievalMethod;
+import java.io.*;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
 import java.nio.file.Files;
@@ -12,6 +13,21 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 public class FileServiceImpl implements FileService{
+    public String fileRead(String pathName){
+        Path file = Paths.get(pathName);
+        BufferedReader bf;
+        try {
+             bf = new BufferedReader(new FileReader(file.toFile()),1024);
+            String result =  bf.readLine();
+            bf.close();
+            return result;
+        }  catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+
     public void fileWrite(String path, String fileName, String content){
         Path dictionary = Paths.get(path);
         Path file = Paths.get(path + "/" + fileName);
@@ -38,4 +54,9 @@ public class FileServiceImpl implements FileService{
             e.printStackTrace();
         }
     }
+
+
+
+
+
 }
